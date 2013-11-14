@@ -131,7 +131,7 @@
                prefix="localhost_access_log." suffix=".txt" pattern="common" resolveHosts="false"/>
         -->
 
-      <Context docBase="Airline Management" path="/Airline_Management" reloadable="true" source="org.eclipse.jst.jee.server:Airline Management"/><Context docBase="Airline ManagementClient" path="/Airline_ManagementClient" reloadable="true" source="org.eclipse.jst.jee.server:Airline ManagementClient"/></Host>
+      <Context docBase="Airline ManagementClient" path="/Airline_ManagementClient" reloadable="true" source="org.eclipse.jst.jee.server:Airline ManagementClient"/><Context docBase="Airline Management" path="/Airline_Management" reloadable="true" source="org.eclipse.jst.jee.server:Airline Management"/></Host>
     </Engine>
   </Service>
 </Server>

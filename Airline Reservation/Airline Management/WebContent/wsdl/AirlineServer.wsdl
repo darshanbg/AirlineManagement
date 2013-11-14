@@ -5,48 +5,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
  <wsdl:types>
   <schema elementFormDefault="qualified" targetNamespace="http://airlineSystem" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://beans"/>
-   <element name="findEmployee">
-    <complexType>
-     <sequence>
-      <element name="emp" type="tns1:Employee"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="findEmployeeResponse">
-    <complexType>
-     <sequence>
-      <element name="findEmployeeReturn" type="tns1:Employee"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="findFlights">
-    <complexType>
-     <sequence>
-      <element name="flight" type="tns1:FlightDetails"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="findFlightsResponse">
-    <complexType>
-     <sequence>
-      <element name="findFlightsReturn" type="tns1:FlightDetails"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="addEmployee">
-    <complexType>
-     <sequence>
-      <element name="employee" type="tns1:Employee"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="addEmployeeResponse">
-    <complexType>
-     <sequence>
-      <element name="addEmployeeReturn" type="xsd:string"/>
-     </sequence>
-    </complexType>
-   </element>
    <element name="login">
     <complexType>
      <sequence>
@@ -158,20 +116,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
-   <element name="deleteCustomer">
-    <complexType>
-     <sequence>
-      <element name="emailID" type="xsd:string"/>
-     </sequence>
-    </complexType>
-   </element>
-   <element name="deleteCustomerResponse">
-    <complexType>
-     <sequence>
-      <element name="deleteCustomerReturn" type="xsd:string"/>
-     </sequence>
-    </complexType>
-   </element>
    <element name="createNewReservation">
     <complexType>
      <sequence>
@@ -197,6 +141,20 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <complexType>
      <sequence>
       <element name="deleteEmployeeReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deleteCustomer">
+    <complexType>
+     <sequence>
+      <element name="emailID" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deleteCustomerResponse">
+    <complexType>
+     <sequence>
+      <element name="deleteCustomerReturn" type="xsd:string"/>
      </sequence>
     </complexType>
    </element>
@@ -252,6 +210,22 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
+   <element name="searchEmployeeForID">
+    <complexType>
+     <sequence>
+      <element name="empID" type="xsd:int"/>
+      <element name="workDesc" type="xsd:string"/>
+      <element name="hireDate" type="xsd:dateTime"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="searchEmployeeForIDResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="searchEmployeeForIDReturn" type="tns1:Employee"/>
+     </sequence>
+    </complexType>
+   </element>
    <element name="findPassengersOnBoard">
     <complexType>
      <sequence>
@@ -266,8 +240,39 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </sequence>
     </complexType>
    </element>
+   <element name="findFlights">
+    <complexType>
+     <sequence>
+      <element name="flight" type="tns1:FlightDetails"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findFlightsResponse">
+    <complexType>
+     <sequence>
+      <element name="findFlightsReturn" type="tns1:FlightDetails"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="addEmployee">
+    <complexType>
+     <sequence>
+      <element name="employee" type="tns1:Employee"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="addEmployeeResponse">
+    <complexType>
+     <sequence>
+      <element name="addEmployeeReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
   </schema>
   <schema elementFormDefault="qualified" targetNamespace="http://beans" xmlns="http://www.w3.org/2001/XMLSchema">
+   <complexType name="Reservation">
+    <sequence/>
+   </complexType>
    <complexType name="Person">
     <sequence>
      <element name="address" nillable="true" type="xsd:string"/>
@@ -282,30 +287,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="zipCode" nillable="true" type="xsd:string"/>
     </sequence>
    </complexType>
-   <complexType name="Employee">
-    <complexContent>
-     <extension base="tns1:Person">
-      <sequence>
-       <element name="employeeID" type="xsd:int"/>
-       <element name="hireDate" nillable="true" type="xsd:string"/>
-       <element name="position" nillable="true" type="xsd:string"/>
-       <element name="workDescription" nillable="true" type="xsd:string"/>
-      </sequence>
-     </extension>
-    </complexContent>
-   </complexType>
-   <complexType name="FlightDetails">
-    <sequence/>
-   </complexType>
-   <complexType name="Reservation">
-    <sequence/>
-   </complexType>
    <complexType name="Traveller">
     <complexContent>
      <extension base="tns1:Person">
       <sequence/>
      </extension>
     </complexContent>
+   </complexType>
+   <complexType name="Employee">
+    <sequence>
+     <element name="employeeID" type="xsd:int"/>
+     <element name="hireDate" nillable="true" type="xsd:dateTime"/>
+     <element name="position" nillable="true" type="xsd:string"/>
+     <element name="uniqueID" type="xsd:int"/>
+     <element name="workDescription" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="FlightDetails">
+    <sequence/>
    </complexType>
   </schema>
  </wsdl:types>
@@ -358,9 +357,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="listAllReservationRequest">
+   <wsdl:message name="searchEmployeeForIDRequest">
 
-      <wsdl:part element="impl:listAllReservation" name="parameters">
+      <wsdl:part element="impl:searchEmployeeForID" name="parameters">
 
       </wsdl:part>
 
@@ -369,6 +368,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="processPayementRequest">
 
       <wsdl:part element="impl:processPayement" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="listAllReservationRequest">
+
+      <wsdl:part element="impl:listAllReservation" name="parameters">
 
       </wsdl:part>
 
@@ -390,17 +397,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="listAllEmployeesRequest">
+   <wsdl:message name="listAllEmployeesResponse">
 
-      <wsdl:part element="impl:listAllEmployees" name="parameters">
+      <wsdl:part element="impl:listAllEmployeesResponse" name="parameters">
 
       </wsdl:part>
 
    </wsdl:message>
 
-   <wsdl:message name="listAllEmployeesResponse">
+   <wsdl:message name="listAllEmployeesRequest">
 
-      <wsdl:part element="impl:listAllEmployeesResponse" name="parameters">
+      <wsdl:part element="impl:listAllEmployees" name="parameters">
 
       </wsdl:part>
 
@@ -478,14 +485,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="findEmployeeRequest">
-
-      <wsdl:part element="impl:findEmployee" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
    <wsdl:message name="processPayementResponse">
 
       <wsdl:part element="impl:processPayementResponse" name="parameters">
@@ -526,17 +525,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="createNewReservationRequest">
+   <wsdl:message name="registerCustomerRequest">
 
-      <wsdl:part element="impl:createNewReservation" name="parameters">
+      <wsdl:part element="impl:registerCustomer" name="parameters">
 
       </wsdl:part>
 
    </wsdl:message>
 
-   <wsdl:message name="registerCustomerRequest">
+   <wsdl:message name="createNewReservationRequest">
 
-      <wsdl:part element="impl:registerCustomer" name="parameters">
+      <wsdl:part element="impl:createNewReservation" name="parameters">
 
       </wsdl:part>
 
@@ -558,6 +557,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="searchEmployeeForIDResponse">
+
+      <wsdl:part element="impl:searchEmployeeForIDResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
    <wsdl:message name="deleteCustomerResponse">
 
       <wsdl:part element="impl:deleteCustomerResponse" name="parameters">
@@ -574,17 +581,17 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="createNewReservationResponse">
+   <wsdl:message name="addEmployeeRequest">
 
-      <wsdl:part element="impl:createNewReservationResponse" name="parameters">
+      <wsdl:part element="impl:addEmployee" name="parameters">
 
       </wsdl:part>
 
    </wsdl:message>
 
-   <wsdl:message name="addEmployeeRequest">
+   <wsdl:message name="createNewReservationResponse">
 
-      <wsdl:part element="impl:addEmployee" name="parameters">
+      <wsdl:part element="impl:createNewReservationResponse" name="parameters">
 
       </wsdl:part>
 
@@ -601,14 +608,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="deleteCustomerRequest">
 
       <wsdl:part element="impl:deleteCustomer" name="parameters">
-
-      </wsdl:part>
-
-   </wsdl:message>
-
-   <wsdl:message name="findEmployeeResponse">
-
-      <wsdl:part element="impl:findEmployeeResponse" name="parameters">
 
       </wsdl:part>
 
@@ -631,42 +630,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </wsdl:message>
 
    <wsdl:portType name="AirlineServer">
-
-      <wsdl:operation name="findEmployee">
-
-         <wsdl:input message="impl:findEmployeeRequest" name="findEmployeeRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:findEmployeeResponse" name="findEmployeeResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="findFlights">
-
-         <wsdl:input message="impl:findFlightsRequest" name="findFlightsRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:findFlightsResponse" name="findFlightsResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="addEmployee">
-
-         <wsdl:input message="impl:addEmployeeRequest" name="addEmployeeRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:addEmployeeResponse" name="addEmployeeResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
 
       <wsdl:operation name="login">
 
@@ -776,18 +739,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="deleteCustomer">
-
-         <wsdl:input message="impl:deleteCustomerRequest" name="deleteCustomerRequest">
-
-       </wsdl:input>
-
-         <wsdl:output message="impl:deleteCustomerResponse" name="deleteCustomerResponse">
-
-       </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="createNewReservation">
 
          <wsdl:input message="impl:createNewReservationRequest" name="createNewReservationRequest">
@@ -807,6 +758,18 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
        </wsdl:input>
 
          <wsdl:output message="impl:deleteEmployeeResponse" name="deleteEmployeeResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteCustomer">
+
+         <wsdl:input message="impl:deleteCustomerRequest" name="deleteCustomerRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:deleteCustomerResponse" name="deleteCustomerResponse">
 
        </wsdl:output>
 
@@ -860,6 +823,18 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="searchEmployeeForID">
+
+         <wsdl:input message="impl:searchEmployeeForIDRequest" name="searchEmployeeForIDRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:searchEmployeeForIDResponse" name="searchEmployeeForIDResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="findPassengersOnBoard">
 
          <wsdl:input message="impl:findPassengersOnBoardRequest" name="findPassengersOnBoardRequest">
@@ -872,65 +847,35 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-   </wsdl:portType>
-
-   <wsdl:binding name="AirlineServerSoapBinding" type="impl:AirlineServer">
-
-      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-
-      <wsdl:operation name="findEmployee">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="findEmployeeRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="findEmployeeResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="findFlights">
 
-         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input message="impl:findFlightsRequest" name="findFlightsRequest">
 
-         <wsdl:input name="findFlightsRequest">
+       </wsdl:input>
 
-            <wsdlsoap:body use="literal"/>
+         <wsdl:output message="impl:findFlightsResponse" name="findFlightsResponse">
 
-         </wsdl:input>
-
-         <wsdl:output name="findFlightsResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
+       </wsdl:output>
 
       </wsdl:operation>
 
       <wsdl:operation name="addEmployee">
 
-         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input message="impl:addEmployeeRequest" name="addEmployeeRequest">
 
-         <wsdl:input name="addEmployeeRequest">
+       </wsdl:input>
 
-            <wsdlsoap:body use="literal"/>
+         <wsdl:output message="impl:addEmployeeResponse" name="addEmployeeResponse">
 
-         </wsdl:input>
-
-         <wsdl:output name="addEmployeeResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
+       </wsdl:output>
 
       </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="AirlineServerSoapBinding" type="impl:AirlineServer">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
       <wsdl:operation name="login">
 
@@ -1094,24 +1039,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="deleteCustomer">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="deleteCustomerRequest">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="deleteCustomerResponse">
-
-            <wsdlsoap:body use="literal"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="createNewReservation">
 
          <wsdlsoap:operation soapAction=""/>
@@ -1141,6 +1068,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="deleteEmployeeResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteCustomer">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteCustomerRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteCustomerResponse">
 
             <wsdlsoap:body use="literal"/>
 
@@ -1220,6 +1165,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="searchEmployeeForID">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchEmployeeForIDRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchEmployeeForIDResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="findPassengersOnBoard">
 
          <wsdlsoap:operation soapAction=""/>
@@ -1231,6 +1194,42 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="findPassengersOnBoardResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="findFlights">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="findFlightsRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="findFlightsResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addEmployee">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addEmployeeRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addEmployeeResponse">
 
             <wsdlsoap:body use="literal"/>
 

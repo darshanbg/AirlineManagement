@@ -1,13 +1,16 @@
 package beans;
 
 import java.io.Serializable;
+import java.util.Date;
 
-public class Employee extends Person implements Serializable
+public class Employee implements Serializable
 {
+
 	int employeeID;
+	int uniqueID;
 	String workDescription;
 	String position;
-	String hireDate;
+	Date hireDate;
 
 	public int getEmployeeID()
 	{
@@ -17,6 +20,16 @@ public class Employee extends Person implements Serializable
 	public void setEmployeeID(int employeeID)
 	{
 		this.employeeID = employeeID;
+	}
+
+	public int getUniqueID()
+	{
+		return uniqueID;
+	}
+
+	public void setUniqueID(int uniqueID)
+	{
+		this.uniqueID = uniqueID;
 	}
 
 	public String getWorkDescription()
@@ -39,12 +52,12 @@ public class Employee extends Person implements Serializable
 		this.position = position;
 	}
 
-	public String getHireDate()
+	public Date getHireDate()
 	{
 		return hireDate;
 	}
 
-	public void setHireDate(String hireDate)
+	public void setHireDate(Date hireDate)
 	{
 		this.hireDate = hireDate;
 	}

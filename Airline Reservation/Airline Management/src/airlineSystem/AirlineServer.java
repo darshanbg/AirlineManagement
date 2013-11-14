@@ -1,5 +1,7 @@
 package airlineSystem;
 
+import java.util.Calendar;
+
 import javax.jws.WebService;
 
 import beans.Employee;
@@ -135,10 +137,13 @@ public class AirlineServer
 		return message;
 	}
 
-	public Employee findEmployee(Employee emp)
+	public Employee[] searchEmployeeForID(int empID, String workDesc, Calendar hireDate)
 	{
-		Employee employee = null;
-		return employee;
+		Employee[] employeeArray = null;
+
+		ModelController controller = new ModelController();
+		employeeArray = controller.searchEmployeeForID(empID, workDesc, hireDate);
+		return employeeArray;
 	}
 
 	public FlightDetails findFlights(FlightDetails flight)

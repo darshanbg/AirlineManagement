@@ -50,6 +50,42 @@ public class AirlineServerProxy implements airlineSystem.AirlineServer {
     return airlineServer.login(userName, password);
   }
   
+  public beans.Reservation[] listAllReservation() throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.listAllReservation();
+  }
+  
+  public beans.Traveller[] listAllCustomers() throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.listAllCustomers();
+  }
+  
+  public beans.Employee[] listAllEmployees() throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.listAllEmployees();
+  }
+  
+  public java.lang.String processPayement(java.lang.String cardID) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.processPayement(cardID);
+  }
+  
+  public java.lang.String issueFlightTicket(beans.FlightDetails flightDetails) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.issueFlightTicket(flightDetails);
+  }
+  
+  public java.lang.String cancelReservation(beans.Reservation reservation) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.cancelReservation(reservation);
+  }
+  
   public java.lang.String[] fetchStateList() throws java.rmi.RemoteException{
     if (airlineServer == null)
       _initAirlineServerProxy();
@@ -62,10 +98,64 @@ public class AirlineServerProxy implements airlineSystem.AirlineServer {
     return airlineServer.registerCustomer(person);
   }
   
+  public java.lang.String createNewReservation(beans.FlightDetails flightDetails) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.createNewReservation(flightDetails);
+  }
+  
+  public java.lang.String deleteEmployee(java.lang.String emailID) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.deleteEmployee(emailID);
+  }
+  
   public java.lang.String deleteCustomer(java.lang.String emailID) throws java.rmi.RemoteException{
     if (airlineServer == null)
       _initAirlineServerProxy();
     return airlineServer.deleteCustomer(emailID);
+  }
+  
+  public beans.FlightDetails[] listAllFlights() throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.listAllFlights();
+  }
+  
+  public java.lang.String updateTravellerInfo(beans.Traveller traveller) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.updateTravellerInfo(traveller);
+  }
+  
+  public java.lang.String updateEmployeeInfo(beans.Employee emp) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.updateEmployeeInfo(emp);
+  }
+  
+  public java.lang.String updateFlightDetails(beans.FlightDetails flight) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.updateFlightDetails(flight);
+  }
+  
+  public beans.Employee[] searchEmployeeForID(int empID, java.lang.String workDesc, java.util.Calendar hireDate) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.searchEmployeeForID(empID, workDesc, hireDate);
+  }
+  
+  public beans.Traveller[] findPassengersOnBoard(beans.FlightDetails flight) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.findPassengersOnBoard(flight);
+  }
+  
+  public beans.FlightDetails findFlights(beans.FlightDetails flight) throws java.rmi.RemoteException{
+    if (airlineServer == null)
+      _initAirlineServerProxy();
+    return airlineServer.findFlights(flight);
   }
   
   public java.lang.String addEmployee(beans.Employee employee) throws java.rmi.RemoteException{

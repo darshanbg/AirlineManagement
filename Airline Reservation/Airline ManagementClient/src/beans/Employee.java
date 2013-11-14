@@ -7,12 +7,14 @@
 
 package beans;
 
-public class Employee  extends beans.Person  implements java.io.Serializable {
+public class Employee  implements java.io.Serializable {
     private int employeeID;
 
-    private java.lang.String hireDate;
+    private java.util.Calendar hireDate;
 
     private java.lang.String position;
+
+    private int uniqueID;
 
     private java.lang.String workDescription;
 
@@ -20,35 +22,16 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
     }
 
     public Employee(
-           java.lang.String address,
-           java.lang.String city,
-           java.lang.String dateOfBirth,
-           java.lang.String emailID,
-           java.lang.String firstName,
-           java.lang.String lastName,
-           java.lang.String password,
-           int roleID,
-           java.lang.String state,
-           java.lang.String zipCode,
            int employeeID,
-           java.lang.String hireDate,
+           java.util.Calendar hireDate,
            java.lang.String position,
+           int uniqueID,
            java.lang.String workDescription) {
-        super(
-            address,
-            city,
-            dateOfBirth,
-            emailID,
-            firstName,
-            lastName,
-            password,
-            roleID,
-            state,
-            zipCode);
-        this.employeeID = employeeID;
-        this.hireDate = hireDate;
-        this.position = position;
-        this.workDescription = workDescription;
+           this.employeeID = employeeID;
+           this.hireDate = hireDate;
+           this.position = position;
+           this.uniqueID = uniqueID;
+           this.workDescription = workDescription;
     }
 
 
@@ -77,7 +60,7 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
      * 
      * @return hireDate
      */
-    public java.lang.String getHireDate() {
+    public java.util.Calendar getHireDate() {
         return hireDate;
     }
 
@@ -87,7 +70,7 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
      * 
      * @param hireDate
      */
-    public void setHireDate(java.lang.String hireDate) {
+    public void setHireDate(java.util.Calendar hireDate) {
         this.hireDate = hireDate;
     }
 
@@ -109,6 +92,26 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
      */
     public void setPosition(java.lang.String position) {
         this.position = position;
+    }
+
+
+    /**
+     * Gets the uniqueID value for this Employee.
+     * 
+     * @return uniqueID
+     */
+    public int getUniqueID() {
+        return uniqueID;
+    }
+
+
+    /**
+     * Sets the uniqueID value for this Employee.
+     * 
+     * @param uniqueID
+     */
+    public void setUniqueID(int uniqueID) {
+        this.uniqueID = uniqueID;
     }
 
 
@@ -142,7 +145,7 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = super.equals(obj) && 
+        _equals = true && 
             this.employeeID == other.getEmployeeID() &&
             ((this.hireDate==null && other.getHireDate()==null) || 
              (this.hireDate!=null &&
@@ -150,6 +153,7 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
             ((this.position==null && other.getPosition()==null) || 
              (this.position!=null &&
               this.position.equals(other.getPosition()))) &&
+            this.uniqueID == other.getUniqueID() &&
             ((this.workDescription==null && other.getWorkDescription()==null) || 
              (this.workDescription!=null &&
               this.workDescription.equals(other.getWorkDescription())));
@@ -163,7 +167,7 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
             return 0;
         }
         __hashCodeCalc = true;
-        int _hashCode = super.hashCode();
+        int _hashCode = 1;
         _hashCode += getEmployeeID();
         if (getHireDate() != null) {
             _hashCode += getHireDate().hashCode();
@@ -171,6 +175,7 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
         if (getPosition() != null) {
             _hashCode += getPosition().hashCode();
         }
+        _hashCode += getUniqueID();
         if (getWorkDescription() != null) {
             _hashCode += getWorkDescription().hashCode();
         }
@@ -193,7 +198,7 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("hireDate");
         elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "hireDate"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
@@ -201,6 +206,12 @@ public class Employee  extends beans.Person  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "position"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("uniqueID");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "uniqueID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("workDescription");

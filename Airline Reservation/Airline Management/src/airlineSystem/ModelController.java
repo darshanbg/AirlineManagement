@@ -4,9 +4,12 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
 
 import sun.misc.BASE64Encoder;
 import beans.Employee;
@@ -238,52 +241,115 @@ public class ModelController
 		EstablishConnection connectionClass = null;
 		Connection connection = null;
 
-		try
-		{
-			connectionClass = new EstablishConnection();
-			connection = connectionClass.getConnection();
-			connection.setAutoCommit(false);
-
-			Person person = new Person();
-			person.setFirstName(employee.getFirstName());
-			person.setLastName(employee.getLastName());
-			person.setAddress(employee.getAddress());
-			person.setCity(employee.getCity());
-			person.setDateOfBirth(employee.getDateOfBirth());
-			person.setEmailID(employee.getEmailID());
-			person.setPassword(employee.getPassword());
-			person.setState(employee.getState());
-			person.setZipCode(employee.getZipCode());
-			person.setRoleID(employee.getRoleID());
-
-			message = new ModelController().registerCustomer(person);
-
-			if (message.equals("Successfully Registered!"))
-			{
-				String query = "update employee , person set workDescription = ? , position = ? , hiredate= ? where emailID = ? ";
-
-				PreparedStatement prepStmt = connection.prepareStatement(query);
-				prepStmt.setString(1, employee.getWorkDescription());
-				prepStmt.setString(2, employee.getPosition());
-				prepStmt.setString(3, employee.getHireDate());
-				prepStmt.setString(4, employee.getEmailID());
-
-				int count = prepStmt.executeUpdate();
-
-				if (count > 0)
-					message = "Employee added successfully to system";
-				else
-					message = "Error while adding a new employee!";
-
-				connectionClass.endConnection(connection);
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			message = "Error while adding a new Employee!!";
-		}
+		// try
+		// {
+		// connectionClass = new EstablishConnection();
+		// connection = connectionClass.getConnection();
+		// connection.setAutoCommit(false);
+		//
+		// Person person = new Person();
+		// // person.setFirstName(employee.getFirstName());
+		// // person.setLastName(employee.getLastName());
+		// // person.setAddress(employee.getAddress());
+		// // person.setCity(employee.getCity());
+		// // person.setDateOfBirth(employee.getDateOfBirth());
+		// // person.setEmailID(employee.getEmailID());
+		// // person.setPassword(employee.getPassword());
+		// // person.setState(employee.getState());
+		// // person.setZipCode(employee.getZipCode());
+		// // person.setRoleID(employee.getRoleID());
+		//
+		// message = new ModelController().registerCustomer(person);
+		//
+		// if (message.equals("Successfully Registered!"))
+		// {
+		// String query =
+		// "update employee , person set workDescription = ? , position = ? , hiredate= ? where emailID = ? ";
+		//
+		// PreparedStatement prepStmt = connection.prepareStatement(query);
+		// prepStmt.setString(1, employee.getWorkDescription());
+		// prepStmt.setString(2, employee.getPosition());
+		// prepStmt.setString(3, employee.getHireDate());
+		// prepStmt.setString(4, employee.getEmailID());
+		//
+		// int count = prepStmt.executeUpdate();
+		//
+		// if (count > 0)
+		// message = "Employee added successfully to system";
+		// else
+		// message = "Error while adding a new employee!";
+		//
+		// connectionClass.endConnection(connection);
+		// }
+		// }
+		// catch (Exception e)
+		// {
+		// e.printStackTrace();
+		// message = "Error while adding a new Employee!!";
+		// }
 
 		return message;
+	}
+
+	public Employee[] searchEmployeeForID(int empID, String workDesc, Calendar hireDate)
+	{
+		EstablishConnection myConnection = new EstablishConnection();
+		Connection con = myConnection.getConnection();
+		PreparedStatement pStmt = null;
+		Employee[] empArray = new Employee[1];
+		String employeeSearchQueryID;
+		String employeeSearchQueryDesc;
+		String employeeSearchQueryDate;
+
+		try
+		{
+
+			if (empID != 0)
+			{
+				employeeSearchQueryID = "select * from emp where employeeID=?;";
+				pStmt = con.prepareStatement(employeeSearchQueryID);
+				pStmt.setInt(1, empID);
+
+			}
+			else if (null != workDesc)
+			{
+				employeeSearchQueryDesc = "select * from emp where workDescription=?;";
+				pStmt = con.prepareStatement(employeeSearchQueryDesc);
+				pStmt.setString(1, workDesc);
+			}
+			else if (null != hireDate)
+			{
+				employeeSearchQueryDate = "select * from emp where hireDate=?;";
+				pStmt = con.prepareStatement(employeeSearchQueryDate);
+				pStmt.setDate(1, (Date) hireDate.getTime());
+			}
+			ResultSet result = null;
+
+			result = pStmt.executeQuery();
+
+			if (result.last())
+			{
+				empArray = new Employee[result.getRow()];
+				result.beforeFirst();
+			}
+
+			int i = 0;
+			while (result.next())
+			{
+				empArray[i] = new Employee();
+				empArray[i].setEmployeeID(result.getInt(1));
+				empArray[i].setUniqueID(result.getInt(2));
+				empArray[i].setWorkDescription(result.getString(3));
+				empArray[i].setPosition(result.getString(4));
+				empArray[i].setHireDate(result.getDate(5));
+				i++;
+			}
+
+		}
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+		}
+		return empArray;
 	}
 }

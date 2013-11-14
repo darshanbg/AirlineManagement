@@ -1,15 +1,19 @@
 package servlets;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import beans.Employee;
 import beans.Person;
 
 public class LoginServlet extends HttpServlet
@@ -124,26 +128,100 @@ public class LoginServlet extends HttpServlet
 
 			if (request.getParameter("Login").equals("Add Employee"))
 			{
-				Employee emp = new Employee();
+				// Employee emp = new Employee();
+				//
+				// emp.setAddress("address");
+				// emp.setCity("city");
+				// emp.setDateOfBirth("10/10/2013");
+				// emp.setEmailID("test12@email.com");
+				// emp.setFirstName("firstName");
+				// emp.setLastName("lastName");
+				// emp.setHireDate("11/11/2013");
+				// emp.setLastName("lastName");
+				// emp.setPassword("password");
+				// emp.setPosition("Pilot");
+				// emp.setRoleID(1);
+				// emp.setState("California");
+				// emp.setWorkDescription("Co-pilot on Air Bus");
+				// emp.setZipCode("31263");
+				//
+				// message = proxy.addEmployee(emp);
+				// System.out.println(message);
 
-				emp.setAddress("address");
-				emp.setCity("city");
-				emp.setDateOfBirth("10/10/2013");
-				emp.setEmailID("test12@email.com");
-				emp.setFirstName("firstName");
-				emp.setLastName("lastName");
-				emp.setHireDate("11/11/2013");
-				emp.setLastName("lastName");
-				emp.setPassword("password");
-				emp.setPosition("Pilot");
-				emp.setRoleID(1);
-				emp.setState("California");
-				emp.setWorkDescription("Co-pilot on Air Bus");
-				emp.setZipCode("31263");
+			}
 
-				message = proxy.addEmployee(emp);
-				System.out.println(message);
+			if (request.getParameter("Login").equals("Search Employee"))
+			{
 
+				System.out.println("In Search");
+
+				try
+				{
+					System.out.println("First");
+					int empID = 0;
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					Calendar cal = null;
+					String strDate = request.getParameter("hireDate");
+					if (null != strDate)
+					{
+						try
+						{
+							cal = Calendar.getInstance();
+							cal.setTime(dateFormat.parse(strDate));
+						}
+						catch (Exception e)
+						{
+							cal = null;
+						}
+					}
+
+					String strEmpID = request.getParameter("empID");
+					System.out.println(strEmpID);
+					if (strEmpID != null && !strEmpID.isEmpty())
+					{
+						empID = Integer.parseInt(strEmpID);
+					}
+					String desc = request.getParameter("description");
+
+					if (empID == 0 && desc == null && cal == null)
+					{
+						request.getSession().setAttribute("emp", null);
+						RequestDispatcher rd = request.getRequestDispatcher("/SearchEmployee.jsp");
+						rd.forward(request, response);
+					}
+
+					System.out.println("Make a call");
+					Object[] eArray = proxy.searchEmployeeForID(empID,
+							request.getParameter("description"), cal);
+
+					List eList = null;
+
+					if (eArray != null)
+					{
+						eList = Arrays.asList(eArray);
+						request.getSession().setAttribute("emp", eList);
+					}
+					else
+					{
+						request.getSession().setAttribute("emp", null);
+					}
+
+					// if (empID != 0) {
+					// request.getSession().setAttribute("emp", eList);
+					// } else {
+					// request.getSession().setAttribute("emp", null);
+					// }
+
+					RequestDispatcher rd = request.getRequestDispatcher("/SearchEmployee.jsp");
+					rd.forward(request, response);
+				}
+
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+					rd.forward(request, response);
+				}
 			}
 		}
 		catch (Exception e)

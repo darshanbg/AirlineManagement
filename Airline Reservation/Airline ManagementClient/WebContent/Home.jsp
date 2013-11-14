@@ -52,16 +52,14 @@ function newPopup(url) {
           </nav>
           <nav>
             <ul id="menu">
-              <li><a href="index.html">Home</a></li>
-              <li id="menu_active"><a href="aircrafts.html">Our Aircraft</a></li>
-              <li><a href="safety.html">Safety</a></li>
+              <li id="menu_active"><a href="aircrafts.html">Home</a></li>
   <!-- <li><a href="JavaScript:newPopup('Login.jsp');">Login</a></li> --> 
   			<% if (signedIn == false) {%>
              <li><a href="Login.jsp;">Login</a></li>
              <% } else { %>
               <li><a href="Login.jsp;">SignOut</a></li>
+              <li><a href="safety.html">My Account</a></li>
              <%} %>
-              <li><a href="contacts.html">Contacts</a></li>
             </ul>
           </nav>
         </div>
