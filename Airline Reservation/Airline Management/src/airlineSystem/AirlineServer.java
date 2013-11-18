@@ -64,10 +64,10 @@ public class AirlineServer
 		return message;
 	}
 
-	public String createNewReservation(FlightDetails flightDetails)
+	public String createNewReservation(FlightDetails journeyDetails, String userID)
 	{
-		String message = null;
-
+		ModelController controller = new ModelController();
+		String message = controller.reserveTicket(journeyDetails, userID);
 		return message;
 	}
 
@@ -78,11 +78,18 @@ public class AirlineServer
 		return message;
 	}
 
-	public String issueFlightTicket(FlightDetails flightDetails)
+	public FlightDetails issueTicket(String userId, int flightNo)
 	{
+		ModelController controller = new ModelController();
+		return controller.issueTicket(userId, flightNo);
+	}
 
-		String message = null;
-		return message;
+	public FlightDetails[] getBookedTickets(String userID)
+	{
+		ModelController controller = new ModelController();
+		FlightDetails[] jDetials = controller.getAllReservations(userID);
+		;
+		return jDetials;
 	}
 
 	public String processPayement(String cardID)
@@ -99,9 +106,11 @@ public class AirlineServer
 		return employeeArray;
 	}
 
-	public Traveller[] listAllCustomers()
+	// GEt 1 or many traveller information
+	public Traveller[] listAllCustomers(String travelerID)
 	{
-		Traveller[] travellerArray = null;
+		ModelController controller = new ModelController();
+		Traveller[] travellerArray = controller.searchTravelers(travelerID);
 
 		return travellerArray;
 	}
@@ -112,9 +121,10 @@ public class AirlineServer
 		return reservationList;
 	}
 
-	public FlightDetails[] listAllFlights()
+	public FlightDetails[] listAllFlights(String source, String destination)
 	{
-		FlightDetails[] flightArray = null;
+		ModelController controller = new ModelController();
+		FlightDetails[] flightArray = controller.searchFlightForSourceAndDest(source, destination);
 
 		return flightArray;
 	}
@@ -144,6 +154,12 @@ public class AirlineServer
 		ModelController controller = new ModelController();
 		employeeArray = controller.searchEmployeeForID(empID, workDesc, hireDate);
 		return employeeArray;
+	}
+
+	public Employee findEmployee(Employee emp)
+	{
+		Employee employee = null;
+		return employee;
 	}
 
 	public FlightDetails findFlights(FlightDetails flight)

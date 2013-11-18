@@ -8,7 +8,154 @@
 package beans;
 
 public class FlightDetails  implements java.io.Serializable {
+    private java.lang.String airlineName;
+
+    private int crewId;
+
+    private java.lang.String destination;
+
+    private int flightNumber;
+
+    private int numberOfSeats;
+
+    private java.lang.String source;
+
     public FlightDetails() {
+    }
+
+    public FlightDetails(
+           java.lang.String airlineName,
+           int crewId,
+           java.lang.String destination,
+           int flightNumber,
+           int numberOfSeats,
+           java.lang.String source) {
+           this.airlineName = airlineName;
+           this.crewId = crewId;
+           this.destination = destination;
+           this.flightNumber = flightNumber;
+           this.numberOfSeats = numberOfSeats;
+           this.source = source;
+    }
+
+
+    /**
+     * Gets the airlineName value for this FlightDetails.
+     * 
+     * @return airlineName
+     */
+    public java.lang.String getAirlineName() {
+        return airlineName;
+    }
+
+
+    /**
+     * Sets the airlineName value for this FlightDetails.
+     * 
+     * @param airlineName
+     */
+    public void setAirlineName(java.lang.String airlineName) {
+        this.airlineName = airlineName;
+    }
+
+
+    /**
+     * Gets the crewId value for this FlightDetails.
+     * 
+     * @return crewId
+     */
+    public int getCrewId() {
+        return crewId;
+    }
+
+
+    /**
+     * Sets the crewId value for this FlightDetails.
+     * 
+     * @param crewId
+     */
+    public void setCrewId(int crewId) {
+        this.crewId = crewId;
+    }
+
+
+    /**
+     * Gets the destination value for this FlightDetails.
+     * 
+     * @return destination
+     */
+    public java.lang.String getDestination() {
+        return destination;
+    }
+
+
+    /**
+     * Sets the destination value for this FlightDetails.
+     * 
+     * @param destination
+     */
+    public void setDestination(java.lang.String destination) {
+        this.destination = destination;
+    }
+
+
+    /**
+     * Gets the flightNumber value for this FlightDetails.
+     * 
+     * @return flightNumber
+     */
+    public int getFlightNumber() {
+        return flightNumber;
+    }
+
+
+    /**
+     * Sets the flightNumber value for this FlightDetails.
+     * 
+     * @param flightNumber
+     */
+    public void setFlightNumber(int flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+
+    /**
+     * Gets the numberOfSeats value for this FlightDetails.
+     * 
+     * @return numberOfSeats
+     */
+    public int getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+
+    /**
+     * Sets the numberOfSeats value for this FlightDetails.
+     * 
+     * @param numberOfSeats
+     */
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
+
+
+    /**
+     * Gets the source value for this FlightDetails.
+     * 
+     * @return source
+     */
+    public java.lang.String getSource() {
+        return source;
+    }
+
+
+    /**
+     * Sets the source value for this FlightDetails.
+     * 
+     * @param source
+     */
+    public void setSource(java.lang.String source) {
+        this.source = source;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -22,7 +169,19 @@ public class FlightDetails  implements java.io.Serializable {
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true;
+        _equals = true && 
+            ((this.airlineName==null && other.getAirlineName()==null) || 
+             (this.airlineName!=null &&
+              this.airlineName.equals(other.getAirlineName()))) &&
+            this.crewId == other.getCrewId() &&
+            ((this.destination==null && other.getDestination()==null) || 
+             (this.destination!=null &&
+              this.destination.equals(other.getDestination()))) &&
+            this.flightNumber == other.getFlightNumber() &&
+            this.numberOfSeats == other.getNumberOfSeats() &&
+            ((this.source==null && other.getSource()==null) || 
+             (this.source!=null &&
+              this.source.equals(other.getSource())));
         __equalsCalc = null;
         return _equals;
     }
@@ -34,6 +193,18 @@ public class FlightDetails  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getAirlineName() != null) {
+            _hashCode += getAirlineName().hashCode();
+        }
+        _hashCode += getCrewId();
+        if (getDestination() != null) {
+            _hashCode += getDestination().hashCode();
+        }
+        _hashCode += getFlightNumber();
+        _hashCode += getNumberOfSeats();
+        if (getSource() != null) {
+            _hashCode += getSource().hashCode();
+        }
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -44,6 +215,42 @@ public class FlightDetails  implements java.io.Serializable {
 
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans", "FlightDetails"));
+        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("airlineName");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "airlineName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("crewId");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "crewId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("destination");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "destination"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("flightNumber");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "flightNumber"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("numberOfSeats");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "numberOfSeats"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("source");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "source"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
     }
 
     /**

@@ -59,6 +59,7 @@ function newPopup(url) {
              <% } else { %>
               <li><a href="Login.jsp;">SignOut</a></li>
               <li><a href="safety.html">My Account</a></li>
+              <li><a href="Reserve.jsp?method=1">Reserve Ticket</a></li>
              <%} %>
             </ul>
           </nav>

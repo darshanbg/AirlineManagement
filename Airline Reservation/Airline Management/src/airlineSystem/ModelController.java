@@ -13,7 +13,10 @@ import java.util.Calendar;
 
 import sun.misc.BASE64Encoder;
 import beans.Employee;
+import beans.FlightDetails;
+import beans.MessageConstants;
 import beans.Person;
+import beans.Traveller;
 import connection.EstablishConnection;
 
 public class ModelController
@@ -289,6 +292,262 @@ public class ModelController
 		// }
 
 		return message;
+	}
+
+	/*
+	 * Get all reservation of USER OR THE SYSTEM
+	 */
+	public FlightDetails[] getAllReservations(String userId)
+	{
+		EstablishConnection myConnection = new EstablishConnection();
+		Connection con = myConnection.getConnection();
+		PreparedStatement pStmt = null;
+		ResultSet rs = null;
+		FlightDetails[] tickets = null;
+
+		String CountQuery = "select count(*) from reservation ";
+		if (userId != null)
+		{
+			CountQuery += " where emailId=?;";
+		}
+		else
+		{
+			CountQuery += ";";
+		}
+
+		String qry = "select * from reservation ";
+		if (userId != null)
+		{
+			CountQuery += " where emailId=?;";
+		}
+		else
+		{
+			CountQuery += ";";
+		}
+		try
+		{
+			pStmt = con.prepareStatement(CountQuery);
+			pStmt.setString(1, userId);
+			rs = pStmt.executeQuery();
+			if (rs.next())
+			{
+				tickets = new FlightDetails[rs.getInt(1)];
+				// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+				pStmt = con.prepareStatement(qry);
+				pStmt.setString(1, userId);
+				rs = pStmt.executeQuery();
+				int i = 0;
+				while (rs.next())
+				{
+					FlightDetails ticket = new FlightDetails();
+					ticket.setFlightNumber(rs.getInt(2));
+					ticket.setAirlineName(rs.getString(3));
+					ticket.setSource(rs.getString(4));
+					ticket.setDestination(rs.getString(5));
+					ticket.setNumberOfSeats(rs.getInt(6));
+					tickets[i] = ticket;
+					i++;
+				}
+			}
+		}
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+		}
+		return tickets;
+	}
+
+	public String reserveTicket(FlightDetails jDetails, String userID)
+	{
+		EstablishConnection myConnection = new EstablishConnection();
+		Connection con = myConnection.getConnection();
+		PreparedStatement pStmt = null;
+
+		String sql = "insert into  reservation values(?,?,?,?,?,?);";
+		try
+		{
+			pStmt = con.prepareStatement(sql);
+			pStmt.setInt(1, jDetails.getFlightNumber());
+			pStmt.setString(2, jDetails.getAirlineName());
+			pStmt.setString(3, jDetails.getSource());
+			pStmt.setString(4, jDetails.getDestination());
+			pStmt.setInt(5, jDetails.getNumberOfSeats());
+			pStmt.setString(6, userID);
+			pStmt.execute();
+			con.close();
+		}
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+		}
+		return MessageConstants.RESERVED_SUCCESSFULLY;
+	}
+
+	public FlightDetails[] searchFlightForSourceAndDest(String source, String destination)
+	{
+
+		EstablishConnection myConnection = new EstablishConnection();
+		Connection con = myConnection.getConnection();
+		PreparedStatement pStmt = null;
+		String flighSearchQry = null;
+		String countQuery = null;
+		ResultSet result = null;
+		FlightDetails[] flights = null;
+
+		if (source == null && destination == null)
+		{
+			countQuery = " select count(*) from flight_details;";
+			flighSearchQry = "select * from flight_details;";
+		}
+		else
+		{
+			countQuery = " select count(*) from flight_details where source=? and destination=?;";
+			flighSearchQry = "select * from flight_details where source=? and destination=?;";
+		}
+
+		try
+		{
+
+			pStmt = con.prepareStatement(countQuery);
+			if (!(source == null && destination != null))
+			{
+				pStmt.setString(1, source);
+				pStmt.setString(2, destination);
+			}
+			result = pStmt.executeQuery();
+			if (result.next())
+			{
+				flights = new FlightDetails[result.getInt(1)];
+				// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
+
+				pStmt = con.prepareStatement(flighSearchQry);
+				pStmt.setString(1, source);
+				pStmt.setString(2, destination);
+				result = pStmt.executeQuery();
+				int i = 0;
+				while (result.next())
+				{
+					FlightDetails flight = new FlightDetails();
+					flight.setFlightNumber(result.getInt(1));
+					flight.setAirlineName(result.getString(2));
+					flight.setSource(result.getString(3));
+					flight.setDestination(result.getString(4));
+					flight.setNumberOfSeats(result.getInt(5));
+					flight.setCrewId(result.getInt(6));
+					flights[i] = flight;
+					i++;
+				}
+			}
+
+		}
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+		}
+		return flights;
+	}
+
+	public FlightDetails issueTicket(String userId, int flightNo)
+	{
+		EstablishConnection myConnection = new EstablishConnection();
+		Connection con = myConnection.getConnection();
+		PreparedStatement pStmt = null;
+		ResultSet result = null;
+
+		FlightDetails ticket = null;
+		String qry = "select * from reservation where emailId=? and flightNumber=?";
+		try
+		{
+			pStmt = con.prepareStatement(qry);
+			pStmt.setString(1, userId);
+			pStmt.setInt(2, flightNo);
+			result = pStmt.executeQuery();
+			if (result.next())
+			{
+				ticket = new FlightDetails();
+				ticket.setFlightNumber(result.getInt(2));
+				ticket.setAirlineName(result.getString(3));
+				ticket.setSource(result.getString(4));
+				ticket.setDestination(result.getString(5));
+				ticket.setNumberOfSeats(result.getInt(6));
+			}
+		}
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+		}
+		return ticket;
+	}
+
+	public Traveller[] searchTravelers(String travelerID)
+	{
+		EstablishConnection myConnection = new EstablishConnection();
+		Connection con = myConnection.getConnection();
+		PreparedStatement pStmt = null;
+		ResultSet result = null;
+
+		Traveller[] travelers = null;
+		System.out.println("traveler id :" + travelerID);
+
+		// Get the count of travellers
+		String travelerCountQry = null;
+		try
+		{
+			if (travelerID == null)
+			{
+				travelers = new Traveller[1];
+			}
+			else
+			{
+				travelerCountQry = "select count(*) from traveler";
+				pStmt = con.prepareStatement(travelerCountQry);
+				result = pStmt.executeQuery();
+				if (result.next())
+				{
+					travelers = new Traveller[result.getInt(1)];
+				}
+			}
+
+		}
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+		}
+		// Traveler oount end
+
+		String travelerSearchQry = "select * from traveler ";
+		if (travelerID != null)
+		{
+			travelerSearchQry += " where travelerID=?;";
+		}
+
+		try
+		{
+
+			// #########################################################################################################################
+			pStmt = con.prepareStatement(travelerSearchQry);
+			if (travelerID != null)
+			{
+				pStmt.setString(1, travelerID);
+			}
+			result = pStmt.executeQuery();
+			int count = 0;
+			while (result.next())
+			{
+				Traveller t = new Traveller();
+				t.setPassportNo(result.getString(1));
+				t.setCustomerId(result.getString(2));
+				t.setNationality(result.getString(3));
+
+				travelers[count] = t;
+				count++;
+			}
+		}
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+		}
+		return travelers;
 	}
 
 	public Employee[] searchEmployeeForID(int empID, String workDesc, Calendar hireDate)

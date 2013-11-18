@@ -10,5 +10,6 @@ public class MessageConstants implements Serializable
 	public static final String FLIGHT_SEAT_EXCEED = "Sorry customer,Numbers of seats exceeds the availability ";
 	public static final String INVALID_LOGIN = "Invalid Credentials!!";
 	public static final String REGESTERED_SUCCESSFULLY = "Registeration Successfull. Please login to continue.";
+	public static final String RESERVED_SUCCESSFULLY = "BOOKED FLIGHT TICKET SUCCESSFULLY.";
 
 }

@@ -8,6 +8,12 @@
 package beans;
 
 public class Traveller  extends beans.Person  implements java.io.Serializable {
+    private java.lang.String customerId;
+
+    private java.lang.String nationality;
+
+    private java.lang.String passportNo;
+
     public Traveller() {
     }
 
@@ -21,7 +27,10 @@ public class Traveller  extends beans.Person  implements java.io.Serializable {
            java.lang.String password,
            int roleID,
            java.lang.String state,
-           java.lang.String zipCode) {
+           java.lang.String zipCode,
+           java.lang.String customerId,
+           java.lang.String nationality,
+           java.lang.String passportNo) {
         super(
             address,
             city,
@@ -33,6 +42,69 @@ public class Traveller  extends beans.Person  implements java.io.Serializable {
             roleID,
             state,
             zipCode);
+        this.customerId = customerId;
+        this.nationality = nationality;
+        this.passportNo = passportNo;
+    }
+
+
+    /**
+     * Gets the customerId value for this Traveller.
+     * 
+     * @return customerId
+     */
+    public java.lang.String getCustomerId() {
+        return customerId;
+    }
+
+
+    /**
+     * Sets the customerId value for this Traveller.
+     * 
+     * @param customerId
+     */
+    public void setCustomerId(java.lang.String customerId) {
+        this.customerId = customerId;
+    }
+
+
+    /**
+     * Gets the nationality value for this Traveller.
+     * 
+     * @return nationality
+     */
+    public java.lang.String getNationality() {
+        return nationality;
+    }
+
+
+    /**
+     * Sets the nationality value for this Traveller.
+     * 
+     * @param nationality
+     */
+    public void setNationality(java.lang.String nationality) {
+        this.nationality = nationality;
+    }
+
+
+    /**
+     * Gets the passportNo value for this Traveller.
+     * 
+     * @return passportNo
+     */
+    public java.lang.String getPassportNo() {
+        return passportNo;
+    }
+
+
+    /**
+     * Sets the passportNo value for this Traveller.
+     * 
+     * @param passportNo
+     */
+    public void setPassportNo(java.lang.String passportNo) {
+        this.passportNo = passportNo;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -46,7 +118,16 @@ public class Traveller  extends beans.Person  implements java.io.Serializable {
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = super.equals(obj);
+        _equals = super.equals(obj) && 
+            ((this.customerId==null && other.getCustomerId()==null) || 
+             (this.customerId!=null &&
+              this.customerId.equals(other.getCustomerId()))) &&
+            ((this.nationality==null && other.getNationality()==null) || 
+             (this.nationality!=null &&
+              this.nationality.equals(other.getNationality()))) &&
+            ((this.passportNo==null && other.getPassportNo()==null) || 
+             (this.passportNo!=null &&
+              this.passportNo.equals(other.getPassportNo())));
         __equalsCalc = null;
         return _equals;
     }
@@ -58,6 +139,15 @@ public class Traveller  extends beans.Person  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = super.hashCode();
+        if (getCustomerId() != null) {
+            _hashCode += getCustomerId().hashCode();
+        }
+        if (getNationality() != null) {
+            _hashCode += getNationality().hashCode();
+        }
+        if (getPassportNo() != null) {
+            _hashCode += getPassportNo().hashCode();
+        }
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -68,6 +158,24 @@ public class Traveller  extends beans.Person  implements java.io.Serializable {
 
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans", "Traveller"));
+        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("customerId");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "customerId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("nationality");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "nationality"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("passportNo");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://beans", "passportNo"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
     }
 
     /**
