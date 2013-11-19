@@ -52,14 +52,13 @@ function newPopup(url) {
           </nav>
           <nav>
             <ul id="menu">
-              <li id="menu_active"><a href="aircrafts.html">Home</a></li>
-  <!-- <li><a href="JavaScript:newPopup('Login.jsp');">Login</a></li> --> 
+              <li id="menu_active"><a href="Home.jsp">Home</a></li>
   			<% if (signedIn == false) {%>
              <li><a href="Login.jsp;">Login</a></li>
              <% } else { %>
+              <li><a href="MyAccount.jsp">My Account</a></li>
+              <li><a href="Admin.jsp">Admin</a></li>
               <li><a href="Login.jsp;">SignOut</a></li>
-              <li><a href="safety.html">My Account</a></li>
-              <li><a href="Reserve.jsp?method=1">Reserve Ticket</a></li>
              <%} %>
             </ul>
           </nav>
@@ -146,7 +145,7 @@ function newPopup(url) {
     </article>
     <article class="col2 pad_left1">
     <form method="post" action="LoginServlet" name="form1">
-      <h2>Aircraft Sales</h2>
+      <h2>Welcome to AirLine</h2>
       <div class="wrapper">
         <figure class="left marg_right1"><img src="images/page2_img1.jpg" alt=""></figure>
         <p><strong>Sed ut perspiciatis</strong> unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae.</p>
@@ -168,9 +167,6 @@ function newPopup(url) {
   <div class="main">
     <footer>
       <div class="footerlink">
-        <p class="lf">Copyright &copy; 2010 <a href="#">Domain Name</a> - All Rights Reserved</p>
-        <p class="rf"><a href="http://www.free-css.com/">Free CSS Templates</a> by <a href="http://www.templatemonster.com/">TemplateMonster</a></p>
-        <div style="clear:both;"></div>
       </div>
     </footer>
   </div>
