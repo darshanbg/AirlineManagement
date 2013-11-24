@@ -12,4 +12,6 @@ public class MessageConstants implements Serializable
 	public static final String REGESTERED_SUCCESSFULLY = "Registeration Successfull. Please login to continue.";
 	public static final String RESERVED_SUCCESSFULLY = "BOOKED FLIGHT TICKET SUCCESSFULLY.";
 
+	public static final String CANCELED_SUCCESSFULLY = "The Ticket has been cancelled successfully.";
+
 }

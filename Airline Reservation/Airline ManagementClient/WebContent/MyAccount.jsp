@@ -23,11 +23,26 @@ function newPopup(url) {
 	popupWindow.focus();
 }
 
+function showTickeSelection(){
+	$("#ticketSelect").show();
+}
 
+function validateTicketNo(){
+	reservationID = $("#reservID").val();
+	var reg = /^[0-9]$/;
+	if(reservationID==""){
+		alert("Reservation number should not be empty");
+		return false;
+	}else if(!reg.test(reservationID)){
+		alert("Reservation number should be integer");
+		return false;
+	}
+}
 </script>
 
 </head>
 <body id="page2">
+<%@ page import="beans.Reservation"%>
 <!-- START PAGE SOURCE -->
 
 <%
@@ -91,9 +106,8 @@ function newPopup(url) {
         <h2>Your Flight Planner</h2>
 
 				<ul id="categories">
-						<li style="border-top: 0;"><a href="">Cancel Reservation</a></li>
-						<li><a href="">My Advertisements</a></li>
-						<li><a href="">My Account</a></li>
+						<li style="border-top: 0;"><a href="TravelServlet?task=cancel">Cancel Reservation</a></li>
+						<li><a href="TravelServlet?task=ticket">Issue Ticket</a></li>
 
 				</ul>
       </div>
@@ -104,10 +118,46 @@ function newPopup(url) {
 
 PUT YOUR MAIN CONTETNT HERE !!!!
 
-
+<
  -->
-
-
+ <%if(request.getParameter("task")!=null && "issueTicket".equals(request.getParameter("task"))){ %>
+ <div id="ticketSelect">
+ 	<table>
+ 	<form action="TravelServlet" method="get" onsubmit="return validateTicketNo()">
+ 		<tr><td>ENTER YOUR RESERVATION ID: <input type="text" id="reservID" name="reservID"/></td>
+ 		<input type="hidden" name="task" value="issueTicket"/>
+ 		<td><input type="submit" value="Issue Ticket"></td></tr>
+ 	</form>
+ 	</table>
+ </div>
+ <%} %>
+ <%if(request.getParameter("message")!=null) {%>
+ 		<p><%=request.getParameter("message")%></p>
+ <%} %>
+<%if(request.getParameter("task")!=null && "cancel".equals(request.getParameter("task"))){%>
+	<table>
+	<tr><th>ReservastionNo</th><th>Airline Number</th><th>Airline Name</th><th>Source</th><th>Destination</th><th>Seats Booked</th></tr>
+	<%Reservation[] reservations = (Reservation[])session.getAttribute("reservations");
+			int rowCnt = 0;
+			for(Reservation reservation : reservations){
+	%>	
+		<form action="TravelServlet" method="post">
+		<tr><td><%=reservation.getReservationId() %></td><td><%=reservation.getFlightNumber() %></td><td><%=reservation.getAirlineName()%></td><td><%=reservation.getSource() %></td>
+		<td><%=reservation.getDestination() %></td><td><%=reservation.getNumberOfSeats()%></td>
+		<input type="hidden" name="reservID" value="<%=reservation.getReservationId()%>"/>
+		<input type="hidden" name="task" value="cancelTicket"/>
+		<td><input type="submit" value="Cancel Ticket"></td></tr>
+		</form>
+	<%rowCnt++;} %>
+	</table>
+<%}else if(request.getParameter("task")!=null && "showTicket".equals(request.getParameter("task"))){
+	Reservation ticket = (Reservation)request.getAttribute("ticket");
+%>
+	<table> 
+	<tr><th>RerservationNo</th><th>AIRLINE NO</th><th>AIRLINE NAME</th><th>SOURCE</th><th>DESTINATION</th><th>SEATS BOOKED</th></tr>
+	<tr><td><%=ticket.getReservationId()%></td><%=ticket.getFlightNumber()%><td><%=ticket.getAirlineName()%></td><td><%=ticket.getSource()%></td><td><%=ticket.getDestination()%></td><td><%=ticket.getNumberOfSeats()%></td></tr>
+	</table>
+<%} %>
     </article>
   </section>
 </div>

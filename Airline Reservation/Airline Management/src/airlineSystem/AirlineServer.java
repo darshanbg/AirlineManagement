@@ -1,7 +1,5 @@
 package airlineSystem;
 
-import java.util.Calendar;
-
 import javax.jws.WebService;
 
 import beans.Employee;
@@ -64,6 +62,7 @@ public class AirlineServer
 		return message;
 	}
 
+	// Added by Pradyumna
 	public String createNewReservation(FlightDetails journeyDetails, String userID)
 	{
 		ModelController controller = new ModelController();
@@ -71,26 +70,28 @@ public class AirlineServer
 		return message;
 	}
 
-	public String cancelReservation(Reservation reservation)
+	public String cancelReservation(String userID, int reservationID)
 	{
 		String message = null;
-
-		return message;
+		ModelController controller = new ModelController();
+		return controller.cancelTicket(userID, reservationID);
 	}
 
-	public FlightDetails issueTicket(String userId, int flightNo)
+	public Reservation issueTicket(String userId, int reservationID)
 	{
 		ModelController controller = new ModelController();
-		return controller.issueTicket(userId, flightNo);
+		return controller.issueTicket(userId, reservationID);
 	}
 
-	public FlightDetails[] getBookedTickets(String userID)
+	public Reservation[] getBookedTickets(String userID)
 	{
 		ModelController controller = new ModelController();
-		FlightDetails[] jDetials = controller.getAllReservations(userID);
+		Reservation[] jDetials = controller.getAllReservations(userID);
 		;
 		return jDetials;
 	}
+
+	// End of code added by Pradyumna
 
 	public String processPayement(String cardID)
 	{
@@ -121,6 +122,7 @@ public class AirlineServer
 		return reservationList;
 	}
 
+	// Start: Code added by Pradyumna
 	public FlightDetails[] listAllFlights(String source, String destination)
 	{
 		ModelController controller = new ModelController();
@@ -135,6 +137,7 @@ public class AirlineServer
 		return message;
 	}
 
+	// End of code added by Pradyumna
 	public String updateEmployeeInfo(Employee emp)
 	{
 		String message = null;
@@ -147,7 +150,7 @@ public class AirlineServer
 		return message;
 	}
 
-	public Employee[] searchEmployeeForID(int empID, String workDesc, Calendar hireDate)
+	public Employee[] searchEmployeeForID(int empID, String workDesc, String hireDate)
 	{
 		Employee[] employeeArray = null;
 

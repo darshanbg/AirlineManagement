@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="beans.FlightDetails"%>
 <html lang="en">
 <head>
 <title>AirLines | Aircrafts</title>
@@ -88,9 +89,10 @@ function newPopup(url) {
     <article class="col1">
       <div class="pad_1">
         <h2>Your Flight Planner</h2>
-        <form id="form_1" action="#" method="post">
-          <div class="wrapper pad_bot1">
-            <div class="radio marg_right1">
+        <form id="form_1" action="TravelServlet" method="post">
+		<!-- Pradyumna: Changes for searching flights based on source,destinatin,time-->
+         <!-- <div class="wrapper pad_bot1">
+     		<div class="radio marg_right1">
               <input type="radio" name="name1">
               Round Trip<br>
               <input type="radio" name="name1">
@@ -100,18 +102,28 @@ function newPopup(url) {
               Empty-Leg<br>
               <input type="radio" name="name1">
               Multi-Leg </div>
-          </div>
+          </div> --> 
           <div class="wrapper"> Leaving From:
             <div class="bg">
-              <input type="text" class="input input1" value="Enter City or Airport Code" onBlur="if(this.value=='') this.value='Enter City or Airport Code'" onFocus="if(this.value =='Enter City or Airport Code' ) this.value=''">
+              <input type="text" class="input input1" name="source" value="Enter City or Airport Code" onBlur="if(this.value=='') this.value='Enter City or Airport Code'" onFocus="if(this.value =='Enter City or Airport Code' ) this.value=''">
             </div>
           </div>
           <div class="wrapper"> Going To:
             <div class="bg">
-              <input type="text" class="input input1" value="Enter City or Airport Code" onBlur="if(this.value=='') this.value='Enter City or Airport Code'" onFocus="if(this.value =='Enter City or Airport Code' ) this.value=''">
+              <input type="text" class="input input1" name="destination" value="Enter City or Airport Code" onBlur="if(this.value=='') this.value='Enter City or Airport Code'" onFocus="if(this.value =='Enter City or Airport Code' ) this.value=''">
             </div>
           </div>
-          <div class="wrapper"> Departure Date and Time:
+          <div class="wrapper"> Departure Time:
+            <div class="wrapper">
+              <!-- <div class="bg left">
+                <input type="text" class="input input2" value="mm/dd/yyyy " onBlur="if(this.value=='') this.value='mm/dd/yyyy '" onFocus="if(this.value =='mm/dd/yyyy ' ) this.value=''">
+              </div>-->
+              <div class="bg right">
+                <input type="text" name="time" class="input input2" value="12:00am" onBlur="if(this.value=='') this.value='12:00am'" onFocus="if(this.value =='12:00am' ) this.value=''">
+              </div>
+            </div>
+          </div>
+         <!--  <div class="wrapper"> Return Date and Time:
             <div class="wrapper">
               <div class="bg left">
                 <input type="text" class="input input2" value="mm/dd/yyyy " onBlur="if(this.value=='') this.value='mm/dd/yyyy '" onFocus="if(this.value =='mm/dd/yyyy ' ) this.value=''">
@@ -120,23 +132,15 @@ function newPopup(url) {
                 <input type="text" class="input input2" value="12:00am" onBlur="if(this.value=='') this.value='12:00am'" onFocus="if(this.value =='12:00am' ) this.value=''">
               </div>
             </div>
-          </div>
-          <div class="wrapper"> Return Date and Time:
-            <div class="wrapper">
-              <div class="bg left">
-                <input type="text" class="input input2" value="mm/dd/yyyy " onBlur="if(this.value=='') this.value='mm/dd/yyyy '" onFocus="if(this.value =='mm/dd/yyyy ' ) this.value=''">
-              </div>
-              <div class="bg right">
-                <input type="text" class="input input2" value="12:00am" onBlur="if(this.value=='') this.value='12:00am'" onFocus="if(this.value =='12:00am' ) this.value=''">
-              </div>
-            </div>
-          </div>
+          </div>  Pradyumna Changes end-->
           <div class="wrapper">
             <p>Passenger(s):</p>
             <div class="bg left">
-              <input type="text" class="input input2" value="# passengers" onBlur="if(this.value=='') this.value='# passengers'" onFocus="if(this.value =='# passengers' ) this.value=''">
+              <input type="text" name="noOfSeats" class="input input2" value="# passengers" onBlur="if(this.value=='') this.value='# passengers'" onFocus="if(this.value =='# passengers' ) this.value=''">
             </div>
-            <a href="#" class="button2">go!</a> </div>
+            <input type="hidden" name="mode" value="search"/>
+            <input type="submit" class="button2" value="Search">
+            <!-- <a href="#" class="button2">go!</a> --></div>
         </form>
         <h2>Did You Know?</h2>
         <p><strong>Lorem ipsum dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo. </p>
@@ -144,6 +148,7 @@ function newPopup(url) {
       </div>
     </article>
     <article class="col2 pad_left1">
+    <%if(request.getParameter("mode")==null){ %>
     <form method="post" action="LoginServlet" name="form1">
       <h2>Welcome to AirLine</h2>
       <div class="wrapper">
@@ -160,6 +165,23 @@ function newPopup(url) {
         <p><strong>Non provident</strong>, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis.</p>
       </div>
       </form>
+      <%}else if(request.getParameter("mode")!=null && "search".equals(request.getParameter("mode"))){%>
+      		<table>
+      		<tr><th>FLIGHT NO</th><th>FLIGHT NAME</th><th>SOURCE</th><th>DESTINATION</th><th>SEATS AVAILABLE</th></tr>
+      		<% FlightDetails[] flights = (FlightDetails[])session.getAttribute("flights");
+      		 	int rowNo = 0;
+      			for(FlightDetails flight : flights){
+      				//Display all flights here
+      		%>
+      		<form action="TravelServlet" method="post">
+      		<tr><td><%=flight.getFlightNumber() %></td><td><%=flight.getAirlineName() %></td><td><%=flight.getSource()%></td><td><%=flight.getDestination()%></td><td><%=flight.getNumberOfSeats()%></td>
+      		<input type="hidden" name="mode" value="reserve"/>
+      		<input type="hidden" name="flightCnt" value="<%=rowNo%>"/>
+      		<td><input type="submit" value="Reserve"/></td></tr>
+      		</form>
+      		<%rowNo++;} %>
+      		</table>
+      <%} %>
     </article>
   </section>
 </div>

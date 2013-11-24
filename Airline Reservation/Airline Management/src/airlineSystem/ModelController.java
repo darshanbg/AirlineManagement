@@ -4,24 +4,25 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Calendar;
 
 import sun.misc.BASE64Encoder;
 import beans.Employee;
 import beans.FlightDetails;
 import beans.MessageConstants;
 import beans.Person;
+import beans.Reservation;
 import beans.Traveller;
 import connection.EstablishConnection;
 
 public class ModelController
 {
-
+	/*
+	 * Added by Darshan -- Encrypts the input String (Password)
+	 */
 	public static synchronized String encrypt(String plaintext) throws Exception
 	{
 		MessageDigest msgDigest = null;
@@ -47,6 +48,9 @@ public class ModelController
 		return hashValue;
 	}
 
+	/*
+	 * Added by Darshan -- Returns the list of valid states
+	 */
 	public String[] fetchStateList()
 	{
 		String[] stateList = null;
@@ -90,6 +94,9 @@ public class ModelController
 		return stateList;
 	}
 
+	/*
+	 * Added by Darshan -- Performs the Login operation
+	 */
 	public String login(String userName, String password)
 	{
 		String message = null;
@@ -103,7 +110,7 @@ public class ModelController
 			connection = connectionClass.getConnection();
 			connection.setAutoCommit(false);
 
-			String query = "SELECT PASSWORD, FIRSTNAME FROM PERSON WHERE EMAILID = ?";
+			String query = "SELECT PASSWORD, ROLEID, FIRSTNAME FROM PERSON WHERE EMAILID = ?";
 
 			PreparedStatement prepStmt = connection.prepareStatement(query);
 
@@ -120,11 +127,13 @@ public class ModelController
 				String encryptedPassword = encrypt(password);
 				String savedPassword = result.getString("password");
 				String firstName = result.getString("firstName");
+				int roleID = result.getInt("roleID");
 
 				if (encryptedPassword.equals(savedPassword))
 				{
-					message = "Success," + firstName;
+					message = "Success," + firstName + "," + roleID;
 					connectionClass.endConnection(connection);
+					System.out.println("message " + message);
 					return message;
 				}
 				else
@@ -138,11 +147,15 @@ public class ModelController
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 		}
 
 		return message;
 	}
 
+	/*
+	 * Added by Darshan -- Registers a new customer
+	 */
 	public String registerCustomer(Person person)
 	{
 		String message = null;
@@ -202,6 +215,9 @@ public class ModelController
 		return message;
 	}
 
+	/*
+	 * Added by Darshan -- Deletes an existing user
+	 */
 	public String deleteCustomer(String emailID)
 	{
 		String message = null;
@@ -215,7 +231,7 @@ public class ModelController
 			connection = connectionClass.getConnection();
 			connection.setAutoCommit(false);
 
-			String query = "delete a,b from person a, traveller b where a.uniqueID = b.uniqueID and a.emailID = ?";
+			String query = "delete from person a, traveller b where a.uniqueID = b.uniqueID and a.emailID = ?";
 
 			PreparedStatement prepStmt = connection.prepareStatement(query);
 
@@ -237,73 +253,16 @@ public class ModelController
 		return message;
 	}
 
-	public String addEmployee(Employee employee)
-	{
-		String message = null;
-
-		EstablishConnection connectionClass = null;
-		Connection connection = null;
-
-		// try
-		// {
-		// connectionClass = new EstablishConnection();
-		// connection = connectionClass.getConnection();
-		// connection.setAutoCommit(false);
-		//
-		// Person person = new Person();
-		// // person.setFirstName(employee.getFirstName());
-		// // person.setLastName(employee.getLastName());
-		// // person.setAddress(employee.getAddress());
-		// // person.setCity(employee.getCity());
-		// // person.setDateOfBirth(employee.getDateOfBirth());
-		// // person.setEmailID(employee.getEmailID());
-		// // person.setPassword(employee.getPassword());
-		// // person.setState(employee.getState());
-		// // person.setZipCode(employee.getZipCode());
-		// // person.setRoleID(employee.getRoleID());
-		//
-		// message = new ModelController().registerCustomer(person);
-		//
-		// if (message.equals("Successfully Registered!"))
-		// {
-		// String query =
-		// "update employee , person set workDescription = ? , position = ? , hiredate= ? where emailID = ? ";
-		//
-		// PreparedStatement prepStmt = connection.prepareStatement(query);
-		// prepStmt.setString(1, employee.getWorkDescription());
-		// prepStmt.setString(2, employee.getPosition());
-		// prepStmt.setString(3, employee.getHireDate());
-		// prepStmt.setString(4, employee.getEmailID());
-		//
-		// int count = prepStmt.executeUpdate();
-		//
-		// if (count > 0)
-		// message = "Employee added successfully to system";
-		// else
-		// message = "Error while adding a new employee!";
-		//
-		// connectionClass.endConnection(connection);
-		// }
-		// }
-		// catch (Exception e)
-		// {
-		// e.printStackTrace();
-		// message = "Error while adding a new Employee!!";
-		// }
-
-		return message;
-	}
-
 	/*
-	 * Get all reservation of USER OR THE SYSTEM
+	 * Code added by Pradyumna Get all reservation of USER OR THE SYSTEM
 	 */
-	public FlightDetails[] getAllReservations(String userId)
+	public Reservation[] getAllReservations(String userId)
 	{
 		EstablishConnection myConnection = new EstablishConnection();
 		Connection con = myConnection.getConnection();
 		PreparedStatement pStmt = null;
 		ResultSet rs = null;
-		FlightDetails[] tickets = null;
+		Reservation[] tickets = null;
 
 		String CountQuery = "select count(*) from reservation ";
 		if (userId != null)
@@ -318,20 +277,23 @@ public class ModelController
 		String qry = "select * from reservation ";
 		if (userId != null)
 		{
-			CountQuery += " where emailId=?;";
+			qry += " where emailId=?;";
 		}
 		else
 		{
-			CountQuery += ";";
+			qry += ";";
 		}
 		try
 		{
 			pStmt = con.prepareStatement(CountQuery);
-			pStmt.setString(1, userId);
+			if (userId != null)
+			{
+				pStmt.setString(1, userId);
+			}
 			rs = pStmt.executeQuery();
 			if (rs.next())
 			{
-				tickets = new FlightDetails[rs.getInt(1)];
+				tickets = new Reservation[rs.getInt(1)];
 				// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 				pStmt = con.prepareStatement(qry);
 				pStmt.setString(1, userId);
@@ -339,7 +301,8 @@ public class ModelController
 				int i = 0;
 				while (rs.next())
 				{
-					FlightDetails ticket = new FlightDetails();
+					Reservation ticket = new Reservation();
+					ticket.setReservationId(rs.getInt(1));
 					ticket.setFlightNumber(rs.getInt(2));
 					ticket.setAirlineName(rs.getString(3));
 					ticket.setSource(rs.getString(4));
@@ -357,13 +320,16 @@ public class ModelController
 		return tickets;
 	}
 
+	/*
+	 * Added by Pradyumna-- Reserves the flight ticket
+	 */
 	public String reserveTicket(FlightDetails jDetails, String userID)
 	{
 		EstablishConnection myConnection = new EstablishConnection();
 		Connection con = myConnection.getConnection();
 		PreparedStatement pStmt = null;
 
-		String sql = "insert into  reservation values(?,?,?,?,?,?);";
+		String sql = "insert into  reservation(flightNumber,airlineName,source,destination,noOfSeats,emailId) values(?,?,?,?,?,?);";
 		try
 		{
 			pStmt = con.prepareStatement(sql);
@@ -383,6 +349,37 @@ public class ModelController
 		return MessageConstants.RESERVED_SUCCESSFULLY;
 	}
 
+	/**
+	 * @Author : Pradyumna
+	 * @param reservationId
+	 * @return
+	 */
+	public String cancelTicket(String UserId, int reservationId)
+	{
+		EstablishConnection myConnection = new EstablishConnection();
+		Connection con = myConnection.getConnection();
+		PreparedStatement pStmt = null;
+		String query = "delete from reservation where emailid=? and reservationid=?;";
+		try
+		{
+			pStmt = con.prepareStatement(query);
+			pStmt.setString(1, UserId);
+			pStmt.setInt(2, reservationId);
+			pStmt.executeUpdate();
+		}
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+
+		}
+
+		return MessageConstants.CANCELED_SUCCESSFULLY;
+	}
+
+	/*
+	 * Added by Pradyumna -- Retruns the available flights for source and
+	 * destination
+	 */
 	public FlightDetails[] searchFlightForSourceAndDest(String source, String destination)
 	{
 
@@ -447,24 +444,30 @@ public class ModelController
 		return flights;
 	}
 
-	public FlightDetails issueTicket(String userId, int flightNo)
+	/**
+	 * @Author : Pradyumna
+	 * @param reservationID
+	 * @return
+	 */
+	public Reservation issueTicket(String userId, int reservationID)
 	{
 		EstablishConnection myConnection = new EstablishConnection();
 		Connection con = myConnection.getConnection();
 		PreparedStatement pStmt = null;
 		ResultSet result = null;
 
-		FlightDetails ticket = null;
-		String qry = "select * from reservation where emailId=? and flightNumber=?";
+		Reservation ticket = null;
+		String qry = "select * from reservation where emailId=? and reservationID=?";
 		try
 		{
 			pStmt = con.prepareStatement(qry);
 			pStmt.setString(1, userId);
-			pStmt.setInt(2, flightNo);
+			pStmt.setInt(2, reservationID);
 			result = pStmt.executeQuery();
 			if (result.next())
 			{
-				ticket = new FlightDetails();
+				ticket = new Reservation();
+				ticket.setReservationId(result.getInt(1));
 				ticket.setFlightNumber(result.getInt(2));
 				ticket.setAirlineName(result.getString(3));
 				ticket.setSource(result.getString(4));
@@ -479,6 +482,9 @@ public class ModelController
 		return ticket;
 	}
 
+	/*
+	 * Added by **** Returns the travellers matching the search criteria
+	 */
 	public Traveller[] searchTravelers(String travelerID)
 	{
 		EstablishConnection myConnection = new EstablishConnection();
@@ -550,7 +556,11 @@ public class ModelController
 		return travelers;
 	}
 
-	public Employee[] searchEmployeeForID(int empID, String workDesc, Calendar hireDate)
+	/*
+	 * Added by Abinaya -- Returns the list of employees matching the search
+	 * criteria
+	 */
+	public Employee[] searchEmployeeForID(int empID, String workDesc, String hireDate)
 	{
 		EstablishConnection myConnection = new EstablishConnection();
 		Connection con = myConnection.getConnection();
@@ -562,25 +572,24 @@ public class ModelController
 
 		try
 		{
-
 			if (empID != 0)
 			{
-				employeeSearchQueryID = "select * from emp where employeeID=?;";
+				employeeSearchQueryID = "select * from employee where employeeID=?;";
 				pStmt = con.prepareStatement(employeeSearchQueryID);
 				pStmt.setInt(1, empID);
 
 			}
 			else if (null != workDesc)
 			{
-				employeeSearchQueryDesc = "select * from emp where workDescription=?;";
+				employeeSearchQueryDesc = "select * from employee where workDescription=?;";
 				pStmt = con.prepareStatement(employeeSearchQueryDesc);
 				pStmt.setString(1, workDesc);
 			}
 			else if (null != hireDate)
 			{
-				employeeSearchQueryDate = "select * from emp where hireDate=?;";
+				employeeSearchQueryDate = "select * from employee where hireDate=?;";
 				pStmt = con.prepareStatement(employeeSearchQueryDate);
-				pStmt.setDate(1, (Date) hireDate.getTime());
+				pStmt.setString(1, hireDate);
 			}
 			ResultSet result = null;
 
@@ -600,7 +609,7 @@ public class ModelController
 				empArray[i].setUniqueID(result.getInt(2));
 				empArray[i].setWorkDescription(result.getString(3));
 				empArray[i].setPosition(result.getString(4));
-				empArray[i].setHireDate(result.getDate(5));
+				empArray[i].setHireDate(result.getString(5));
 				i++;
 			}
 
@@ -610,5 +619,102 @@ public class ModelController
 			se.printStackTrace();
 		}
 		return empArray;
+	}
+
+	/*
+	 * Added by Darshan -- Adds a new employee to the system
+	 */
+	public String addEmployee(Employee employee)
+	{
+		String message = null;
+
+		EstablishConnection connectionClass = null;
+		Connection connection = null;
+
+		try
+		{
+			connectionClass = new EstablishConnection();
+			connection = connectionClass.getConnection();
+			connection.setAutoCommit(false);
+
+			Person person = new Person();
+			person.setFirstName(employee.getFirstName());
+			person.setLastName(employee.getLastName());
+			person.setAddress(employee.getAddress());
+			person.setCity(employee.getCity());
+			person.setDateOfBirth(employee.getDateOfBirth());
+			person.setEmailID(employee.getEmailID());
+			person.setPassword(employee.getPassword());
+			person.setState(employee.getState());
+			person.setZipCode(employee.getZipCode());
+			person.setRoleID(employee.getRoleID());
+			String emailID = person.getEmailID();
+
+			String query1 = "Select count(1) from person where emailID = ?";
+			PreparedStatement preparedStmt = connection.prepareStatement(query1);
+
+			preparedStmt.setString(1, emailID);
+			ResultSet result1 = preparedStmt.executeQuery();
+
+			while (result1.next())
+			{
+				if (result1.getInt(1) > 0)
+				{
+					message = "This email ID already exists. ";
+					return message;
+				}
+			}
+
+			String query2 = "Insert into person (firstName, lastName, address, city, zipCode, dateOfBirth, roleID, emailID, password, state) values (?,?,?,?,?,?,?,?,?,?)";
+			PreparedStatement preparedStat2 = connection.prepareStatement(query2);
+
+			preparedStat2.setString(1, person.getFirstName());
+			preparedStat2.setString(2, person.getLastName());
+			preparedStat2.setString(3, person.getAddress());
+			preparedStat2.setString(4, person.getCity());
+			preparedStat2.setString(5, person.getZipCode());
+			preparedStat2.setString(6, person.getDateOfBirth());
+			preparedStat2.setInt(7, person.getRoleID());
+
+			preparedStat2.setString(8, person.getEmailID());
+			preparedStat2.setString(9, encrypt(person.getPassword()));
+			preparedStat2.setString(10, person.getState());
+
+			preparedStat2.executeUpdate();
+
+			try
+			{
+				String query = "update employee , person set workDescription = ? , position = ? , hiredate= ? where emailID = ? and employee.uniqueID = person.uniqueID";
+
+				System.out.println("In MC " + employee.getWorkDescription());
+				PreparedStatement prepStmt = connection.prepareStatement(query);
+				prepStmt.setString(1, employee.getWorkDescription());
+				prepStmt.setString(2, employee.getPosition());
+
+				prepStmt.setString(3, "10/10/10");
+				prepStmt.setString(4, employee.getEmailID());
+
+				int count = prepStmt.executeUpdate();
+				if (count > 0)
+					message = "Employee added successfully to system";
+				else
+					message = "Error while adding a new employee!";
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				connection.rollback();
+				message = "Some error while registering Customer!";
+			}
+
+			connectionClass.endConnection(connection);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			message = "Some error while registering Customer!";
+		}
+		return message;
 	}
 }

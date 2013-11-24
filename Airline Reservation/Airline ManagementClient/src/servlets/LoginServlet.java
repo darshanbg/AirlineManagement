@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import beans.Employee;
 import beans.Person;
 
 public class LoginServlet extends HttpServlet
@@ -77,7 +79,7 @@ public class LoginServlet extends HttpServlet
 
 			if (request.getParameter("Login").equals("Login"))
 			{
-
+				System.out.println("In Login");
 				String userName = request.getParameter("userName");
 				String password = request.getParameter("password");
 
@@ -89,7 +91,7 @@ public class LoginServlet extends HttpServlet
 				{
 					message = proxy.login(userName, password);
 
-					System.out.println(message);
+					System.out.println("Message" + message);
 
 					StringTokenizer tokenizer = new StringTokenizer(message, ",");
 					String[] resultArray = new String[tokenizer.countTokens()];
@@ -105,8 +107,10 @@ public class LoginServlet extends HttpServlet
 						HttpSession session = request.getSession();
 
 						String fName = resultArray[1];
+						int roleID = Integer.parseInt(resultArray[2]);
 						session.setAttribute("fName", fName);
-
+						session.setAttribute("roleID", roleID);
+						System.out.println("roleID " + roleID);
 						response.sendRedirect("Home.jsp");
 					}
 					else
@@ -118,35 +122,77 @@ public class LoginServlet extends HttpServlet
 				}
 			}
 
-			if (request.getParameter("Login").equals("Remove"))
+			if (request.getParameter("Login").equals("Delete Employee"))
 			{
 				System.out.println("Remove");
 
-				message = proxy.deleteCustomer("a@smtith.com");
+				String email = request.getParameter("emailID");
+
+				message = proxy.deleteCustomer(email);
 				System.out.println(message);
 			}
 
 			if (request.getParameter("Login").equals("Add Employee"))
 			{
-				// Employee emp = new Employee();
-				//
-				// emp.setAddress("address");
-				// emp.setCity("city");
-				// emp.setDateOfBirth("10/10/2013");
-				// emp.setEmailID("test12@email.com");
-				// emp.setFirstName("firstName");
-				// emp.setLastName("lastName");
-				// emp.setHireDate("11/11/2013");
-				// emp.setLastName("lastName");
-				// emp.setPassword("password");
-				// emp.setPosition("Pilot");
-				// emp.setRoleID(1);
-				// emp.setState("California");
-				// emp.setWorkDescription("Co-pilot on Air Bus");
-				// emp.setZipCode("31263");
-				//
-				// message = proxy.addEmployee(emp);
-				// System.out.println(message);
+				Employee emp = new Employee();
+
+				String firstName = request.getParameter("firstName");
+				String lastName = request.getParameter("lastName");
+				String email = request.getParameter("email");
+				String password = request.getParameter("password");
+				String city = request.getParameter("city");
+				String address = request.getParameter("address");
+				String position = request.getParameter("position");
+				String workDesc = request.getParameter("workDescription");
+
+				System.out.println(workDesc);
+
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				Calendar cal = null;
+				String strDate = request.getParameter("DOB");
+				if (null != strDate)
+				{
+					try
+					{
+						cal = Calendar.getInstance();
+						cal.setTime(dateFormat.parse(strDate));
+					}
+					catch (Exception e)
+					{
+						cal = null;
+					}
+				}
+
+				System.out.println(cal);
+
+				String zipCode = request.getParameter("zipCode");
+				String state = request.getParameter("selectedState");
+
+				emp.setAddress(address);
+				emp.setCity(city);
+				emp.setDateOfBirth("10/10/10");
+				emp.setEmailID(email);
+				emp.setFirstName(firstName);
+				emp.setLastName(lastName);
+				emp.setPassword(password);
+				emp.setPosition(position);
+				emp.setRoleID(1);
+				emp.setState(state);
+				emp.setWorkDescription(workDesc);
+				emp.setZipCode(zipCode);
+
+				message = proxy.addEmployee(emp);
+
+				request.setAttribute("Message", message);
+				PrintWriter out = response.getWriter();
+				out.println("<html><body>");
+				out.println("<script type=\"text/javascript\">");
+				out.println("var popwin = window.open(\"Error.jsp\")");
+				out.println("setTimeout(function(){ popwin.close(); window.location.href='pageB.jsp';},5000)");
+				out.println("</script>");
+				out.println("</body></html>");
+
+				System.out.println(message);
 
 			}
 
@@ -157,23 +203,10 @@ public class LoginServlet extends HttpServlet
 
 				try
 				{
+					PrintWriter out = response.getWriter();
 					System.out.println("First");
 					int empID = 0;
-					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-					Calendar cal = null;
 					String strDate = request.getParameter("hireDate");
-					if (null != strDate)
-					{
-						try
-						{
-							cal = Calendar.getInstance();
-							cal.setTime(dateFormat.parse(strDate));
-						}
-						catch (Exception e)
-						{
-							cal = null;
-						}
-					}
 
 					String strEmpID = request.getParameter("empID");
 					System.out.println(strEmpID);
@@ -183,39 +216,53 @@ public class LoginServlet extends HttpServlet
 					}
 					String desc = request.getParameter("description");
 
-					if (empID == 0 && desc == null && cal == null)
+					if (empID == 0 && desc == null && strDate == null)
 					{
-						request.getSession().setAttribute("emp", null);
-						RequestDispatcher rd = request.getRequestDispatcher("/SearchEmployee.jsp");
-						rd.forward(request, response);
+						out.println("No data Found");
 					}
 
 					System.out.println("Make a call");
 					Object[] eArray = proxy.searchEmployeeForID(empID,
-							request.getParameter("description"), cal);
-
-					List eList = null;
+							request.getParameter("description"), strDate);
 
 					if (eArray != null)
 					{
-						eList = Arrays.asList(eArray);
-						request.getSession().setAttribute("emp", eList);
+						List eList = Arrays.asList(eArray);
+						out.println("<table width=\"100%\"; cellpadding=\"5\">"
+								+ "<col width=\"400\">"
+								+ "<col width=\"400\">"
+								+ "<col width=\"400\">"
+								+ "<col width=\"400\">"
+								+ "<tbody><tr>"
+								+ "<th style=\"border-style:solid; border-width:thin; border-color: Black\">Employee ID</th>"
+								+ "<th style=\"border-style:solid; border-width:thin; border-color: Black\">Work Description</th>"
+								+ "<th style=\"border-style:solid; border-width:thin; border-color: Black\">Position</th>"
+								+ "<th style=\"border-style:solid; border-width:thin; border-color: Black\">Hire Date</th>"
+								+ "</tr></tbody>");
+						for (Employee emp : (List<Employee>) eList)
+						{
+							out.println("<tr>"
+									+ "<td style=\"border-style:solid; border-width:thin; border-color: Black\" align=\"center\">"
+									+ emp.getEmployeeID()
+									+ "</td>"
+									+ "<td style=\"border-style:solid; border-width:thin; border-color: Black\" align=\"center\">"
+									+ emp.getWorkDescription()
+									+ "</td>"
+									+ "<td style=\"border-style:solid; border-width:thin; border-color: Black\" align=\"center\">"
+									+ emp.getPosition()
+									+ "</td>"
+									+ "<td style=\"border-style:solid; border-width:thin; border-color: Black\" align=\"center\">"
+									+ emp.getHireDate() + "</td>" + "</tr>");
+						}
+						out.println("</table>");
+
 					}
 					else
 					{
-						request.getSession().setAttribute("emp", null);
+						out.println("No data Found");
 					}
 
-					// if (empID != 0) {
-					// request.getSession().setAttribute("emp", eList);
-					// } else {
-					// request.getSession().setAttribute("emp", null);
-					// }
-
-					RequestDispatcher rd = request.getRequestDispatcher("/SearchEmployee.jsp");
-					rd.forward(request, response);
 				}
-
 				catch (Exception e)
 				{
 					e.printStackTrace();

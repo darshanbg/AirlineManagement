@@ -1,27 +1,41 @@
 package beans;
 
 import java.io.Serializable;
+
 @SuppressWarnings("serial")
-public class JourneyDetails implements Serializable{
+public class JourneyDetails implements Serializable
+{
 	int FlightNo;
 	String destination;
 	String boardingpoint;
-	public int getFlightNo() {
+
+	public int getFlightNo()
+	{
 		return FlightNo;
 	}
-	public void setFlightNo(int flightNo) {
+
+	public void setFlightNo(int flightNo)
+	{
 		FlightNo = flightNo;
 	}
-	public String getDestination() {
+
+	public String getDestination()
+	{
 		return destination;
 	}
-	public void setDestination(String destination) {
+
+	public void setDestination(String destination)
+	{
 		this.destination = destination;
 	}
-	public String getBoardingpoint() {
+
+	public String getBoardingpoint()
+	{
 		return boardingpoint;
 	}
-	public void setBoardingpoint(String boardingpoint) {
+
+	public void setBoardingpoint(String boardingpoint)
+	{
 		this.boardingpoint = boardingpoint;
 	}
 }
